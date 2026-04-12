@@ -1,9 +1,20 @@
-use crate::todos::todos::{Todo, TodoList};
-use chrono::Utc;
+use dotenvy;
+use crate::cli::ui::print_options;
 
 mod todos;
+mod cli; 
+mod db;
 
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>>{
 
-    println!("{:#?}", list);
+    dotenvy::dotenv()?;
+
+    let path = dotenvy::var("JSON_PATH")?;
+
+    println!("Path: {:?}", path);
+
+    print_options();
+
+
+    Ok(())
 }

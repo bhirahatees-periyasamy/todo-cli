@@ -13,3 +13,9 @@ pub struct Todo {
 pub struct TodoList {
     pub tasks: Vec<Todo>
 }
+
+impl Todo {
+    pub fn new(task: String) -> Self {
+        Todo { task, create_at: Utc::now(), update_at: Utc::now(), is_completed: false, is_deleted: false }
+    }
+}
