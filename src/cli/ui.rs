@@ -1,6 +1,8 @@
 use crate::db::core::handle_input;
+use crate::db::db::TodoList;
 use crate::todos::todos::Todo;
 use std::process;
+use std::io::{self, Write};
 
 #[derive(Debug)]
 enum InputType {
@@ -20,6 +22,8 @@ pub fn print_options() -> () {
     print_static_options();
     loop {
         print!("Enter: ");
+
+        io::stdout().flush().expect("Failed to flush");
 
         let input = match handle_input() {
             Ok(value) => value.trim().to_string(),
@@ -78,7 +82,7 @@ pub fn handle_options(option: usize) {
 }
 
 fn handle_add_todo() {
-    println!("Enter Task: ");
+    print!("Enter Task: ");
     let input = match handle_input() {
         Ok(value) => value.trim().to_string(),
         _ => {
@@ -89,5 +93,11 @@ fn handle_add_todo() {
 
     let todo = Todo::new(input);
 
-    println!("{:#?}", todo);
+    let mut todo_db = TodoList::new();
+
+    todo_db.todos.push(todo);
+
+    todo_db.write();
+
+    println!("{:#?}", todo_db);
 }

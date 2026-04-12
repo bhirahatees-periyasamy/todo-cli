@@ -1,6 +1,7 @@
 use chrono::{DateTime, Utc};
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Todo {
     pub task : String,
     pub create_at:  DateTime<Utc>,
@@ -9,10 +10,6 @@ pub struct Todo {
     pub is_deleted: bool 
 }
 
-#[derive(Debug)]
-pub struct TodoList {
-    pub tasks: Vec<Todo>
-}
 
 impl Todo {
     pub fn new(task: String) -> Self {
