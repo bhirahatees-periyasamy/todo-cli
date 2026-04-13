@@ -3,11 +3,12 @@ use std::io::Write;
 use std::process;
 
 use crate::todos::todos::Todo;
-use serde::{Deserialize,Serialize};
+use chrono::{DateTime, Utc};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct TodoList {
-    pub todos: Vec<Todo>
+    pub todos: Vec<Todo>,
 }
 
 impl TodoList {
@@ -52,8 +53,7 @@ impl TodoList {
     }
 
     pub fn write(&self) {
-        let path = dotenvy::var("JSON_PATH")
-            .unwrap_or("../tasks.json".to_string());
+        let path = dotenvy::var("JSON_PATH").unwrap_or("../tasks.json".to_string());
 
         let json = match serde_json::to_string_pretty(self) {
             Ok(j) => j,
@@ -67,5 +67,23 @@ impl TodoList {
             println!("Failed to write file: {:?}", e);
             process::exit(1);
         }
+    }
+
+    pub fn remove(&mut self, index: usize) {
+        self.todos
+            .get_mut(index)
+            .map(|todo: &mut Todo| todo.is_deleted = true);
+    }
+
+    pub fn update_task(&mut self, index: usize, task: String) {
+        self.todos.get_mut(index).map(|todo: &mut Todo| {
+            todo.update_at = Utc::now();
+            todo.task = task;
+        });
+    }
+    pub fn handle_mark_as_completed(&mut self, index: usize) {
+        self.todos
+            .get_mut(index)
+            .map(|todo: &mut Todo| todo.is_completed = true);
     }
 }
